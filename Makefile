@@ -21,6 +21,10 @@ test:
 update:
 	forge update
 
+.PHONY: deploy # Deploy contract
+deploy:
+	forge create --rpc-url "https://rpc.sepolia.org" --private-key ${PRIVATE_KEY} ./src/CrowdFunding.sol:CrowdFunding --verify --etherscan-api-key ${ETHERSCAN_KEY} --verifier etherscan
+
 .PHONY: clean # Clean build files
 clean:
 	forge clean
