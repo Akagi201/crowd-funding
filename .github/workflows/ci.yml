@@ -1,0 +1,47 @@
+name: Forge CI
+
+on: workflow_dispatch
+
+env:
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  forge_ci:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        rust: [nightly]
+
+    name: Foundry CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Forge build
+        run: |
+          forge --version
+          forge build --sizes
+        id: build
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: solhint
+        run: |
+          npm install -g solhint
+          solhint './src/**/*.sol'

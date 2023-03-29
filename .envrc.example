@@ -1,0 +1,7 @@
+RPC_URL_MAINNET="https://rpc.ankr.com/eth"
+RPC_URL_GOERLI="https://rpc.ankr.com/eth_goerli"
+RPC_URL_HYPERSPACE="https://rpc.ankr.com/filecoin_testnet"
+RPC_URL_SEPOLIA="https://rpc.sepolia.org"
+ETHERSCAN_KEY=XXX
+PRIVATE_KEY=XXX
+VERSION="0.1.0"
