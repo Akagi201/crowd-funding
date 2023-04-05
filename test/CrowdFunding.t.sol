@@ -13,22 +13,37 @@ contract CrowdfundingTest is Test {
     }
 
     function testCreateCampaign() public {
-        crowdfunding.createCampaign(payable(address(0x1)), 100, 100);
+        // https://github.com/foundry-rs/foundry/issues/2943
+        crowdfunding.createCampaign(payable(address(0x100)), 100, 100);
         assertEq(crowdfunding.getCampaignsCount(), 1);
     }
 
     function testContribute() public {
-        crowdfunding.createCampaign(payable(address(0x1)), 100, 100);
+        vm.roll(200);
+        crowdfunding.createCampaign(payable(address(0x100)), 100, 100);
         crowdfunding.contribute{value: 10}(0);
-        // assertEq(crowdfunding.campaigns(0).amountRaised, 10);
+        (address payable beneficiary, uint256 goal, uint256 deadline, uint256 amountRaised, bool closed) =
+            crowdfunding.campaigns(0);
+        assertEq(beneficiary, address(0x100));
+        assertEq(goal, 100);
+        assertEq(deadline, 300);
+        assertEq(amountRaised, 10);
+        assertEq(closed, false);
     }
 
     function testWithdraw() public {
-        crowdfunding.createCampaign(payable(address(0x1)), 10, 100);
-        crowdfunding.contribute{value: 10}(0);
-        vm.roll(201);
-        vm.prank(address(0x1));
-        // crowdfunding.withdraw(0);
-        // assertEq(crowdfunding.campaigns(0).amountRaised, 0);
+        vm.roll(200);
+        crowdfunding.createCampaign(payable(address(0x100)), 100, 100);
+        crowdfunding.contribute{value: 100}(0);
+        vm.roll(301);
+        vm.prank(address(0x100));
+        crowdfunding.withdraw(0);
+        (address payable beneficiary, uint256 goal, uint256 deadline, uint256 amountRaised, bool closed) =
+            crowdfunding.campaigns(0);
+        assertEq(beneficiary, address(0x100));
+        assertEq(goal, 100);
+        assertEq(deadline, 300);
+        assertEq(amountRaised, 100);
+        assertEq(closed, true);
     }
 }
