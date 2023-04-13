@@ -1,0 +1,30 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: CrowdFunding
+    network: goerli
+    source:
+      address: "0x9c6882f28f4ad6f510772a7ee373793a0b994870"
+      abi: CrowdFunding
+      startBlock: 3280783
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CampaignContributed
+        - CampaignCreated
+        - CampaignWithdrawn
+      abis:
+        - name: CrowdFunding
+          file: CrowdFunding/abis/CrowdFunding.json
+      eventHandlers:
+        - event: CampaignContributed(uint256,address,uint256)
+          handler: handleCampaignContributed
+        - event: CampaignCreated(uint256)
+          handler: handleCampaignCreated
+        - event: CampaignWithdrawn(uint256,address,uint256)
+          handler: handleCampaignWithdrawn
+      file: CrowdFunding/CrowdFunding.wasm

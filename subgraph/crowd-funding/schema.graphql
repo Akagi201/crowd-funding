@@ -1,0 +1,27 @@
+type CampaignContributed @entity(immutable: true) {
+  id: Bytes!
+  campaignId: BigInt! # uint256
+  contributor: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type CampaignCreated @entity(immutable: true) {
+  id: Bytes!
+  campaignId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type CampaignWithdrawn @entity(immutable: true) {
+  id: Bytes!
+  campaignId: BigInt! # uint256
+  beneficiary: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
