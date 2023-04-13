@@ -13,6 +13,10 @@ contract CrowdFunding {
 
     uint256 numCampaigns;
     mapping(uint256 => Campaign) public campaigns;
+
+    event CampaignCreated(uint256 campaignId);
+    event CampaignContributed(uint256 campaignId, address contributor, uint256 amount);
+    event CampaignWithdrawn(uint256 campaignId, address beneficiary, uint256 amount);
     // Campaign[] public campaigns;
 
     // refs: https://docs.soliditylang.org/en/latest/types.html#structs
@@ -32,6 +36,7 @@ contract CrowdFunding {
         newCampaign.deadline = block.number + _duration;
         newCampaign.amountRaised = 0;
         newCampaign.closed = false;
+        emit CampaignCreated(numCampaigns);
         numCampaigns++;
     }
 
@@ -41,6 +46,7 @@ contract CrowdFunding {
         require(!campaign.closed, "Campaign is closed");
         campaign.contributions[msg.sender] += msg.value;
         campaign.amountRaised += msg.value;
+        emit CampaignContributed(campaignId, msg.sender, msg.value);
     }
 
     function withdraw(uint256 campaignId) public {
@@ -50,6 +56,7 @@ contract CrowdFunding {
         require(block.number >= campaign.deadline, "Campaign has not ended yet");
         campaign.beneficiary.transfer(campaign.amountRaised);
         campaign.closed = true;
+        emit CampaignWithdrawn(campaignId, msg.sender, campaign.amountRaised);
     }
 
     function getCampaignsCount() public view returns (uint256) {
